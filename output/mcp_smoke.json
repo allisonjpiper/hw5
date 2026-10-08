@@ -1,0 +1,154 @@
+{
+  "test": "Problem 4 MCP smoke test",
+  "server": "campus-customs (stdio, from .mcp.json: .venv/bin/python mcp_server/server.py)",
+  "database": "data/campus_customs_new.db (freshly reset to the original values before this test)",
+  "run_date": "2026-10-07",
+  "called_by": "Claude Code (vibe coder) through the project MCP connection",
+  "note": "Re-run after the three ticket tools got clear names (formerly tool_1, tool_2, tool_3). Outputs are identical to the first smoke test.",
+  "all_match_db": true,
+  "entries": [
+    {
+      "prompt": "Using the campus-customs MCP server, call check_order_fulfillment with ticket 101, check_rent_coverage with ticket 102, and price_bulk_order with ticket 103. Save the results to output/mcp_smoke.json with one entry per tool containing: the prompt that triggered the test, the tool name, the ticket id, and the full tool output. Then check each output against data/campus_customs_new.db and note whether they match.",
+      "tool_name": "check_order_fulfillment",
+      "ticket_id": 101,
+      "tool_output": {
+        "ticket_id": 101,
+        "requester": "Tauhid Zaman",
+        "sku": "CC-TEE-WHITE",
+        "size": "S",
+        "qty_requested": 1,
+        "product_name": "Classic Bulldog Tee",
+        "qty_on_hand": 0,
+        "location": "Aisle B",
+        "list_price": 28,
+        "can_fill_now": false,
+        "today": "2026-08-31",
+        "restock_invoice": {
+          "id": 501,
+          "amount": 840,
+          "due_date": "2026-08-28",
+          "status": "open",
+          "description": "Rush reprint CC-TEE-WHITE S",
+          "vendor_name": "Bulldog Print Co",
+          "lead_days": 5,
+          "days_overdue": 3
+        }
+      },
+      "db_check": {
+        "matches_db": true,
+        "fields_checked": 15,
+        "mismatches": {},
+        "notes": "Ticket 101, inventory (CC-TEE-WHITE, S), pricing, invoice 501 and vendor 1 all match. Derived values check out: on hand 0 < 1 requested, so can_fill_now=false; invoice due 2026-08-28 vs desk date 2026-08-31 = 3 days overdue."
+      }
+    },
+    {
+      "prompt": "Using the campus-customs MCP server, call check_order_fulfillment with ticket 101, check_rent_coverage with ticket 102, and price_bulk_order with ticket 103. Save the results to output/mcp_smoke.json with one entry per tool containing: the prompt that triggered the test, the tool name, the ticket id, and the full tool output. Then check each output against data/campus_customs_new.db and note whether they match.",
+      "tool_name": "check_rent_coverage",
+      "ticket_id": 102,
+      "tool_output": {
+        "ticket_id": 102,
+        "requester": "Elm City Properties",
+        "lease_id": 1,
+        "space_name": "Chapel Street shop",
+        "landlord": "Elm City Properties",
+        "monthly_rent": 2400,
+        "next_due": "2026-09-02",
+        "today": "2026-08-31",
+        "days_until_due": 2,
+        "rent_already_paid_in_payments_log": 0,
+        "cash_accounts": [
+          {
+            "name": "checking",
+            "balance": 3400,
+            "date": "2026-08-31"
+          }
+        ],
+        "total_cash": 3400,
+        "open_invoices": [
+          {
+            "id": 501,
+            "amount": 840,
+            "due_date": "2026-08-28",
+            "description": "Rush reprint CC-TEE-WHITE S",
+            "vendor_name": "Bulldog Print Co"
+          }
+        ],
+        "open_invoices_total": 840,
+        "cash_after_rent": 1000,
+        "cash_after_rent_and_open_invoices": 160,
+        "can_cover_rent": true
+      },
+      "db_check": {
+        "matches_db": true,
+        "fields_checked": 10,
+        "mismatches": {},
+        "notes": "Lease 1, the checking balance, open invoice 501 and the (empty) payments log all match. Derived values check out: 2 days until 2026-09-02 (the ticket text also says 'due in 2 days'); 3400 - 2400 = 1000; 1000 - 840 = 160."
+      }
+    },
+    {
+      "prompt": "Using the campus-customs MCP server, call check_order_fulfillment with ticket 101, check_rent_coverage with ticket 102, and price_bulk_order with ticket 103. Save the results to output/mcp_smoke.json with one entry per tool containing: the prompt that triggered the test, the tool name, the ticket id, and the full tool output. Then check each output against data/campus_customs_new.db and note whether they match.",
+      "tool_name": "price_bulk_order",
+      "ticket_id": 103,
+      "tool_output": {
+        "ticket_id": 103,
+        "requester": "Yale AI Club",
+        "request_notes": "Student org wants 20 hoodies, size M, asking for a bulk discount.",
+        "sku": "CC-HOOD-NAVY",
+        "size": "M",
+        "product_name": "Basic Hoodie Big Yale",
+        "qty_requested": 20,
+        "qty_on_hand": 8,
+        "qty_fillable_now": 8,
+        "shortfall": 12,
+        "stock_by_size": [
+          {
+            "size": "L",
+            "qty": 14
+          },
+          {
+            "size": "M",
+            "qty": 8
+          },
+          {
+            "size": "S",
+            "qty": 4
+          },
+          {
+            "size": "XL",
+            "qty": 6
+          }
+        ],
+        "unit_cost": 22,
+        "list_price": 58,
+        "margin_per_unit": 36,
+        "max_discount_pct_before_loss": 62.1,
+        "price_floor_per_unit": 22,
+        "full_order_at_list_price": 1160,
+        "full_order_cost": 440,
+        "vendors": [
+          {
+            "name": "Bulldog Print Co",
+            "specialty": "apparel reprint",
+            "lead_days": 5
+          },
+          {
+            "name": "Elm City Gifts",
+            "specialty": "mugs and small goods",
+            "lead_days": 3
+          },
+          {
+            "name": "QuickShip CT",
+            "specialty": "local courier",
+            "lead_days": 1
+          }
+        ]
+      },
+      "db_check": {
+        "matches_db": true,
+        "fields_checked": 11,
+        "mismatches": {},
+        "notes": "Ticket 103, the CC-HOOD-NAVY inventory (all sizes), pricing and vendors all match. Derived values check out: shortfall 20 - 8 = 12; margin 58 - 22 = 36; 36/58 = 62.1% max discount; 20 x 58 = 1160 at list; 20 x 22 = 440 cost."
+      }
+    }
+  ]
+}

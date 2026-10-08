@@ -1,0 +1,19 @@
+# Secrets: never commit the real key
+.env
+.env.local
+frontend/.env.local
+
+# Environments and build output
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# Local-only files
+.DS_Store
+.claude/
+data/backups/
+data 3/
+output/*.tmp

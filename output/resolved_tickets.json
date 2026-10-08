@@ -1,0 +1,133 @@
+{
+  "generated_for": "Problem 9: Resolve the tickets",
+  "model": "gpt-6-luna (Portkey, OpenAI Responses API) for every agent",
+  "database": "data/campus_customs_new.db",
+  "reset_before_run": "2026-10-07T21:36:18 (POST /reset from data/campus_customs.db; backup pre_reset_20261007_213618.db)",
+  "starting_checking_balance": 3400.0,
+  "ending_checking_balance": 160.0,
+  "ending_balance_verified": "cash_accounts.checking = 160.00 read from the database after all approvals (3400 - 840 - 2400 = 160)",
+  "total_token_cost_usd": 0.020396,
+  "tickets": [
+    {
+      "id": 101,
+      "type": "customer_order",
+      "requester": "Tauhid Zaman",
+      "final_status": "resolved",
+      "short_outcome": "Size S Bulldog Tee was out of stock (0 on hand). The overdue $840 rush-reprint invoice 501 was approved and paid so Bulldog Print Co can restock (5-day lead). The customer draft offers the in-stock sizes M (5), L (3) or XL (2) now, with no delivery promise for size S.",
+      "cash_change": -840.0,
+      "agent_runs": [
+        "desk-20261007-213745-2c04",
+        "desk-20261007-230845-db5a"
+      ],
+      "agents": {
+        "boss": "Read check_order_fulfillment, checked list_approval_queue, handed work to Accounting and then Customer Service (one at a time), and recorded 'awaiting_approval'. On the follow-up run it confirmed with list_approval_queue that invoice 501 was paid and draft 1 existed, then recorded 'resolved' with no delegation (3 calls, $0.0014).",
+        "accounting": "Called get_cash_position and list_approval_queue, laid out the cash order (rent $2,400 first, then the $840 invoice, leaving $160), and queued approval request #1 for invoice 501 with request_payment_approval. No money moved.",
+        "customer_service": "Checked the ticket (list_ticket_queue) and other sizes (lookup_inventory_pricing), then saved draft #1 to Tauhid Zaman with save_message_draft, offering M/L/XL with stock counts and no vendor or payment details.",
+        "inventory": "Not called (check_order_fulfillment already had the stock, invoice and lead-time facts).",
+        "facilities": "Not called."
+      },
+      "human_approvals": [
+        {
+          "approval_request_id": 1,
+          "kind": "invoice",
+          "ref": "invoice 501",
+          "payee": "Bulldog Print Co",
+          "amount": 840.0,
+          "requested_by": "accounting",
+          "approved_by": "Allison Piper",
+          "approved_at": "2026-10-07T23:08:45",
+          "payment_id": 1,
+          "paid_at": "2026-10-07T23:08:45",
+          "status": "paid"
+        }
+      ],
+      "drafts": [
+        {
+          "draft_id": 1,
+          "recipient": "Tauhid Zaman",
+          "subject": "Classic Bulldog Tee availability",
+          "body": "Hi Tauhid,\n\nWe\u2019re sorry, but we don\u2019t have the Classic Bulldog Tee in size S available right now. We can offer the same tee in size M (5 in stock), size L (3 in stock), or size XL (2 in stock). Let us know if you\u2019d like one of these available sizes instead.\n\nCampus Customs",
+          "status": "draft_not_sent"
+        }
+      ],
+      "human_follow_up": "Send draft 1 to Tauhid Zaman."
+    },
+    {
+      "id": 102,
+      "type": "rent_notice",
+      "requester": "Elm City Properties",
+      "final_status": "resolved",
+      "short_outcome": "$2,400 September rent for the Chapel Street shop (due 2026-09-02) was approved and paid. The lease's next due date moved to 2026-10-02. The follow-up run flagged that the $160 left can't cover October's $2,400 (a $2,240 shortfall).",
+      "cash_change": -2400.0,
+      "agent_runs": [
+        "desk-20261007-213846-b8d1",
+        "desk-20261007-230859-f787"
+      ],
+      "agents": {
+        "boss": "Read check_rent_coverage, handed the payment to Accounting, and recorded 'awaiting_approval'. On the follow-up run it checked the queue and rent sheet, asked Accounting to confirm, and recorded 'resolved' with the October shortfall as a risk.",
+        "accounting": "Working run: get_cash_position, list_approval_queue, then queued approval request #2 for $2,400 rent (request_payment_approval) without duplicating invoice request #1. Follow-up: confirmed payment #2 in the log and reported the get_cash_position warning that the next $2,400 (due 2026-10-02) can't be covered.",
+        "facilities": "Not called (check_rent_coverage already covered the lease, landlord, rent and due date).",
+        "inventory": "Not called.",
+        "customer_service": "Not called (no customer involved)."
+      },
+      "human_approvals": [
+        {
+          "approval_request_id": 2,
+          "kind": "rent",
+          "ref": "lease 1",
+          "payee": "Elm City Properties",
+          "amount": 2400.0,
+          "requested_by": "accounting",
+          "approved_by": "Allison Piper",
+          "approved_at": "2026-10-07T23:08:45",
+          "payment_id": 2,
+          "paid_at": "2026-10-07T23:08:45",
+          "status": "paid"
+        }
+      ],
+      "drafts": [],
+      "human_follow_up": "Plan for October rent: $2,400 due 2026-10-02 against $160 in checking."
+    },
+    {
+      "id": 103,
+      "type": "price_override",
+      "requester": "Yale AI Club",
+      "final_status": "resolved",
+      "short_outcome": "Only 8 of the 20 size-M hoodies are in stock, and the $264 reprint for the other 12 is unaffordable ($160 free \u2192 \u2212$104). The owner approved 8 \u00d7 $52 = $416 (10% off $58 list, $30 margin per unit over the $22 cost), with the draft also offering a size mix from current stock (L 14, XL 6, S 4) to reach 20 without a reprint.",
+      "cash_change": 0.0,
+      "agent_runs": [
+        "desk-20261007-213908-891d"
+      ],
+      "agents": {
+        "boss": "Read price_bulk_order, handed pricing to Accounting and then the quote to Customer Service (passing Accounting's exact price), checked list_approval_queue, and recorded 'awaiting_approval' because a price is an owner decision.",
+        "accounting": "Called get_cash_position, price_bulk_order, list_approval_queue and list_vendors_invoices. Declined the 12-unit reprint PO ($264 vs $160 free) and recommended 8 \u00d7 $52 = $416 ($240 margin vs $288 at list), noting L (14), S (4) and XL (6) as same-price alternatives.",
+        "customer_service": "Saved draft #2 to Yale AI Club with save_message_draft: 8 size-M hoodies at $52 ($416), pending owner approval, and an offer to discuss a size mix from current stock without reserving quantities.",
+        "inventory": "Not called (price_bulk_order already had stock by size and vendors).",
+        "facilities": "Not called."
+      },
+      "human_approvals": [
+        {
+          "type": "price_quote",
+          "detail": "8 \u00d7 CC-HOOD-NAVY size M at $52 = $416 (size-mix alternative allowed)",
+          "approved_by": "Allison Piper",
+          "how": "POST /tickets/103/resolve (human_resolve_ticket), logged as human_resolution",
+          "cash_moved": 0
+        }
+      ],
+      "drafts": [
+        {
+          "draft_id": 2,
+          "recipient": "Yale AI Club",
+          "subject": "Bulk hoodie quote and availability",
+          "body": "Hi Yale AI Club,\n\nWe can offer 8 Basic Hoodie Big Yale hoodies in size M at $52 each ($416 total), pending owner approval. We can\u2019t confirm the full 20 size-M order right now. We can also discuss a size mix from current stock: S (4), M (8), L (14), and XL (6). Availability may change, and these quantities are not reserved.\n\nLet us know what you\u2019d like to discuss.\n\nCampus Customs",
+          "status": "draft_not_sent"
+        }
+      ],
+      "human_follow_up": "Send draft 2 to Yale AI Club."
+    }
+  ],
+  "notes": [
+    "Every agent ran on gpt-6-luna through the OpenAI Responses API. The first three attempts after the reset (desk-20261007-213650-c813, -213652-897f, -213652-c663) failed before any tool call because gpt-6-luna rejects tools with reasoning on /v1/chat/completions. They wrote nothing to the database, are logged as loop_error in the audit trail, and led to the switch to the Responses API.",
+    "Tool names: the MCP tools were renamed from tool_1\u2026tool_15 to descriptive names before this run (e.g. check_order_fulfillment, request_payment_approval, pay_approved_request)."
+  ]
+}
